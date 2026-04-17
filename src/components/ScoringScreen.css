@@ -1,0 +1,246 @@
+.scoring-screen {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.scoring-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.scoring-header h2 {
+  font-size: 1.5rem;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.target-name {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.letter-badge {
+  display: inline-block;
+  font-family: 'Space Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 0.5rem 2rem;
+  background: linear-gradient(135deg, rgba(255, 107, 157, 0.1), rgba(78, 205, 196, 0.1));
+  border-radius: 15px;
+  color: var(--primary);
+}
+
+.scoring-section {
+  margin-bottom: 2rem;
+}
+
+.scoring-section h3 {
+  color: var(--text);
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.score-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.score-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.duplicate-warning {
+  background: linear-gradient(135deg, rgba(252, 92, 101, 0.1), rgba(254, 200, 77, 0.1));
+  color: var(--error);
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-left: 4px solid var(--error);
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+.score-row:hover {
+  background: #f0f0f0;
+}
+
+.answer-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.category-label {
+  font-weight: 700;
+  color: var(--text);
+  min-width: 80px;
+  font-size: 1rem;
+}
+
+.answer-text {
+  font-family: 'Space Mono', monospace;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.answer-text.empty {
+  color: #ccc;
+  font-style: italic;
+}
+
+.score-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.score-btn {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--primary);
+  background: white;
+  color: var(--primary);
+  border-radius: 10px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.score-btn:hover:not(:disabled) {
+  background: var(--primary);
+  color: white;
+  transform: scale(1.1);
+}
+
+.score-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.score-input {
+  width: 70px;
+  height: 45px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: 'Space Mono', monospace;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  background: white;
+  color: var(--accent);
+}
+
+.total-score-section {
+  text-align: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(155, 89, 182, 0.1), rgba(78, 205, 196, 0.1));
+  border-radius: 15px;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.total-score {
+  font-family: 'Space Mono', monospace;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-left: 1rem;
+}
+
+.reference-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 2px solid #f0f0f0;
+}
+
+.reference-section h3 {
+  color: var(--text);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.reference-answers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 15px;
+}
+
+.reference-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.ref-category {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+.ref-answer {
+  font-size: 0.95rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .scoring-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .letter-badge {
+    font-size: 1.2rem;
+    padding: 0.4rem 1.5rem;
+  }
+
+  .score-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .answer-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .category-label {
+    min-width: auto;
+  }
+
+  .score-controls {
+    justify-content: center;
+  }
+
+  .reference-answers {
+    grid-template-columns: 1fr 1fr;
+  }
+}

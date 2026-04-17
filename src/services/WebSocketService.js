@@ -124,6 +124,15 @@ class WebSocketService {
     });
   }
 
+  submitScores(roomCode, playerId, categoryScores) {
+    this.send('/app/submit-scores', {
+      type: 'SUBMIT_SCORES',
+      roomCode,
+      playerId,
+      categoryScores
+    });
+  }
+
   isConnected() {
     return this.connected;
   }

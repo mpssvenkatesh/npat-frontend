@@ -4,6 +4,7 @@ import Header from './components/Header';
 import StartScreen from './components/StartScreen';
 import Lobby from './components/Lobby';
 import GameScreen from './components/GameScreen';
+import ScoringScreen from './components/ScoringScreen';
 import WaitingScreen from './components/WaitingScreen';
 import ResultsScreen from './components/ResultsScreen';
 import Alert from './components/Alert';
@@ -16,7 +17,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://npat-backend.o
 function App() {
   const [connected, setConnected] = useState(false);
   const [gameState, setGameState] = useState({
-    screen: 'start', // start, lobby, game, waiting, results
+    screen: 'start', // start, lobby, game, scoring, waiting, results
     roomCode: null,
     playerId: null,
     playerName: null,
@@ -24,7 +25,12 @@ function App() {
     players: [],
     letter: null,
     timeLeft: 60,
-    timerDuration: 60
+    timerDuration: 60,
+    categories: ['Name', 'Place', 'Animal', 'Thing'],
+    // Scoring state
+    scoringTarget: null,
+    myAnswers: null,
+    duplicates: null
   });
   const [alert, setAlert] = useState(null);
 
@@ -90,11 +96,19 @@ function App() {
           screen: 'game',
           letter: message.data.letter,
           timeLeft: message.data.timerDuration || 60,
-          timerDuration: message.data.timerDuration || 60
+          timerDuration: message.data.timerDuration || 60,
+          categories: message.data.categories || ['Name', 'Place', 'Animal', 'Thing']
         }));
         break;
       case 'GAME_UPDATE':
-        // Update if needed
+        // Show progress of players submitting
+        break;
+      case 'SCORING_PHASE':
+        handleScoringPhase(message);
+        break;
+      case 'SCORING_UPDATE':
+        // Show progress of players scoring
+        showAlert(`${message.data.playersScored}/${message.data.totalPlayers} players completed scoring`, 'info');
         break;
       case 'RESULTS_READY':
         setGameState(prev => ({
@@ -111,30 +125,53 @@ function App() {
 
   const handleRoomCreated = (message) => {
     const { roomCode, playerId, data } = message;
-    setGameState({
-      ...gameState,
+    setGameState(prev => ({
+      ...prev,
       screen: 'lobby',
       roomCode,
       playerId,
       isHost: true,
       players: data.players,
-      timerDuration: data.timerDuration || 60
-    });
+      timerDuration: data.timerDuration || 60,
+      categories: data.categories || prev.categories
+    }));
     WebSocketService.subscribeToRoom(roomCode, handleRoomMessage);
   };
 
   const handleRoomJoined = (message) => {
     const { roomCode, playerId, data } = message;
-    setGameState({
-      ...gameState,
+    setGameState(prev => ({
+      ...prev,
       screen: 'lobby',
       roomCode,
       playerId,
       isHost: false,
       players: data.players,
-      timerDuration: data.timerDuration || 60
-    });
+      timerDuration: data.timerDuration || 60,
+      categories: data.categories || prev.categories
+    }));
     WebSocketService.subscribeToRoom(roomCode, handleRoomMessage);
+  };
+
+  const handleScoringPhase = (message) => {
+    const { data } = message;
+    const assignment = data.scoringAssignments[gameState.playerId];
+    
+    if (assignment) {
+      setGameState(prev => ({
+        ...prev,
+        screen: 'scoring',
+        scoringTarget: {
+          id: assignment.targetPlayerId,
+          name: assignment.targetPlayerName,
+          answers: assignment.targetAnswers
+        },
+        myAnswers: assignment.scorerAnswers,
+        duplicates: data.duplicates,
+        letter: data.letter,
+        categories: data.categories || prev.categories
+      }));
+    }
   };
 
   const createRoom = (playerName) => {
@@ -165,7 +202,13 @@ function App() {
 
   const submitAnswers = (answers) => {
     WebSocketService.submitAnswers(gameState.roomCode, gameState.playerId, answers);
+    setGameState(prev => ({ ...prev, screen: 'waiting', myAnswers: answers }));
+  };
+
+  const submitScores = (scores) => {
+    WebSocketService.submitScores(gameState.roomCode, gameState.playerId, scores);
     setGameState(prev => ({ ...prev, screen: 'waiting' }));
+    showAlert('Scores submitted! Waiting for others...', 'success');
   };
 
   const leaveRoom = () => {
@@ -180,7 +223,11 @@ function App() {
       players: [],
       letter: null,
       timeLeft: 60,
-      timerDuration: 60
+      timerDuration: 60,
+      categories: ['Name', 'Place', 'Animal', 'Thing'],
+      scoringTarget: null,
+      myAnswers: null,
+      duplicates: null
     });
   };
 
@@ -216,6 +263,17 @@ function App() {
             letter={gameState.letter}
             timerDuration={gameState.timerDuration}
             onSubmitAnswers={submitAnswers}
+          />
+        )}
+        
+        {gameState.screen === 'scoring' && (
+          <ScoringScreen
+            targetPlayer={gameState.scoringTarget}
+            myAnswers={gameState.myAnswers}
+            duplicates={gameState.duplicates}
+            letter={gameState.letter}
+            categories={gameState.categories}
+            onSubmitScores={submitScores}
           />
         )}
         
