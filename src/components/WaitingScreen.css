@@ -1,0 +1,58 @@
+.waiting-screen {
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.spinner {
+  width: 80px;
+  height: 80px;
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid var(--primary);
+  border-radius: 50%;
+  margin: 0 auto 2rem;
+  animation: spin 1s linear infinite;
+}
+
+.waiting-screen h2 {
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.waiting-screen p {
+  color: var(--text);
+  opacity: 0.7;
+  margin-bottom: 2rem;
+}
+
+.waiting-dots {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.dot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--primary);
+  animation: bounce 1.4s infinite ease-in-out;
+}
+
+.dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
