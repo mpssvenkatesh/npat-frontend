@@ -12,7 +12,7 @@ import './styles/global.css';
 import './App.css';
 
 // IMPORTANT: Update this with your Render.com backend URL
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://npat-backend.onrender.com/api';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8080/api';
 
 function App() {
   const [connected, setConnected] = useState(false);
@@ -71,6 +71,9 @@ function App() {
       case 'ROOM_JOINED':
         handleRoomJoined(message);
         break;
+      case 'SCORING_PHASE':
+        handleScoringPhase(message);
+        break;
       case 'ERROR':
         showAlert(message.data, 'error');
         break;
@@ -103,12 +106,11 @@ function App() {
       case 'GAME_UPDATE':
         // Show progress of players submitting
         break;
-      case 'SCORING_PHASE':
-        handleScoringPhase(message);
-        break;
       case 'SCORING_UPDATE':
         // Show progress of players scoring
-        showAlert(`${message.data.playersScored}/${message.data.totalPlayers} players completed scoring`, 'info');
+        if (message.data.playersScored && message.data.totalPlayers) {
+          showAlert(`${message.data.playersScored}/${message.data.totalPlayers} players completed scoring`, 'info');
+        }
         break;
       case 'RESULTS_READY':
         setGameState(prev => ({
@@ -233,10 +235,14 @@ function App() {
 
   const playAgain = () => {
     if (gameState.isHost) {
-      startGame();
+      WebSocketService.playAgain(gameState.roomCode, gameState.playerId);
     } else {
       showAlert('Only the host can start a new game!', 'error');
     }
+  };
+
+  const backToLobby = () => {
+    setGameState(prev => ({ ...prev, screen: 'lobby' }));
   };
 
   return (
@@ -262,6 +268,7 @@ function App() {
           <GameScreen
             letter={gameState.letter}
             timerDuration={gameState.timerDuration}
+            categories={gameState.categories}
             onSubmitAnswers={submitAnswers}
           />
         )}
@@ -287,7 +294,7 @@ function App() {
             winner={gameState.winner}
             letter={gameState.letter}
             onPlayAgain={playAgain}
-            onBackToLobby={() => setGameState(prev => ({ ...prev, screen: 'lobby' }))}
+            onBackToLobby={backToLobby}
             isHost={gameState.isHost}
           />
         )}

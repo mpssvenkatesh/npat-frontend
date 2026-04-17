@@ -133,6 +133,14 @@ class WebSocketService {
     });
   }
 
+  playAgain(roomCode, playerId) {
+    this.send('/app/play-again', {
+      type: 'PLAY_AGAIN',
+      roomCode,
+      playerId
+    });
+  }
+
   isConnected() {
     return this.connected;
   }

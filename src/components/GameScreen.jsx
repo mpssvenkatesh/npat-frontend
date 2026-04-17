@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './GameScreen.css';
 
-const CATEGORIES = ['Name', 'Place', 'Animal', 'Thing'];
-
-function GameScreen({ letter, timerDuration, onSubmitAnswers }) {
-  const [answers, setAnswers] = useState({
-    Name: '',
-    Place: '',
-    Animal: '',
-    Thing: ''
+function GameScreen({ letter, timerDuration, categories, onSubmitAnswers }) {
+  const CATEGORIES = categories || ['Name', 'Place', 'Animal', 'Thing'];
+  
+  const [answers, setAnswers] = useState(() => {
+    const initialAnswers = {};
+    CATEGORIES.forEach(cat => {
+      initialAnswers[cat] = '';
+    });
+    return initialAnswers;
   });
   const [timeLeft, setTimeLeft] = useState(timerDuration);
 
