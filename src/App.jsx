@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import WebSocketService from './services/WebSocketService';
 import Header from './components/Header';
 import StartScreen from './components/StartScreen';
@@ -16,6 +16,8 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8080/
 
 function App() {
   const [connected, setConnected] = useState(false);
+  const roomCodeRef = useRef(null);
+  const playerIdRef = useRef(null);
   const [gameState, setGameState] = useState({
     screen: 'start', // start, lobby, game, scoring, waiting, results
     roomCode: null,
@@ -34,6 +36,11 @@ function App() {
   });
   const [alert, setAlert] = useState(null);
 
+  useEffect(() => {
+    roomCodeRef.current = gameState.roomCode;
+    playerIdRef.current = gameState.playerId;
+  }, [gameState.roomCode, gameState.playerId]);
+
   // Connect to WebSocket on mount
   useEffect(() => {
     WebSocketService.connect(
@@ -49,8 +56,8 @@ function App() {
     );
 
     return () => {
-      if (gameState.roomCode) {
-        WebSocketService.leaveRoom(gameState.roomCode, gameState.playerId);
+      if (roomCodeRef.current) {
+        WebSocketService.leaveRoom(roomCodeRef.current, playerIdRef.current);
       }
       WebSocketService.disconnect();
     };
